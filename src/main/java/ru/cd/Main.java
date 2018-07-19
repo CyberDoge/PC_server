@@ -18,7 +18,7 @@ public class Main {
                 var id = Integer.parseInt(input.substring(3, indexOfStart));
                 var command = COMMANDS.get(id);
                 var request = input.substring(indexOfStart+1);
-                command.getRequest(request);
+                command.putRequest(request);
             }
             Command cmd = new Command(connection, input);
             COMMANDS.put(cmd.getId(), cmd);

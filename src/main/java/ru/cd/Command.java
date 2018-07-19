@@ -10,10 +10,10 @@ import java.util.Date;
 
 public class Command implements Runnable, Closeable {
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_BLUE = "\u001B[34m";
     private static final Runtime RUNTIME = Runtime.getRuntime();
     private static int lastId = 0;
 
@@ -38,7 +38,7 @@ public class Command implements Runnable, Closeable {
     }
 
     public boolean isAlive() {
-        return process.isAlive();
+        return process != null && process.isAlive();
     }
 
     @Override
@@ -49,6 +49,7 @@ public class Command implements Runnable, Closeable {
             processReader = process.getInputStream();
             processWriter = process.getOutputStream();
             var output = new String(processReader.readAllBytes());
+            System.out.println(ANSI_RED + output.length());
             System.out.println(ANSI_GREEN + output + ANSI_RESET);
             lifeCycle();
         } catch (IOException e) {
@@ -76,7 +77,7 @@ public class Command implements Runnable, Closeable {
     }
 
 
-    public void getRequest(String input) throws IOException {
+    public void putRequest(String input) throws IOException {
         if (input.equals("kill")) {
             close();
             return;
@@ -87,6 +88,7 @@ public class Command implements Runnable, Closeable {
 
     @Override
     public void close() throws IOException {
+        //todo check if already called
         processReader.close();
         processWriter.close();
         process.destroy();
