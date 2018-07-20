@@ -53,12 +53,7 @@ public class Command implements Runnable, Closeable {
             System.out.println(ANSI_GREEN + output + ANSI_RESET);
             lifeCycle();
         } catch (IOException e) {
-            try {
                 connection.writeResult(command + " exec error:\n" + e.getLocalizedMessage());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-                System.exit(-1);
-            }
         }
     }
 
@@ -86,12 +81,28 @@ public class Command implements Runnable, Closeable {
 
     }
 
+    public int getExitCode(){
+        return process.exitValue();
+    }
     @Override
-    public void close() throws IOException {
+    public void close() {
         //todo check if already called
-        processReader.close();
-        processWriter.close();
-        process.destroy();
+
+        if (processReader != null) {
+            try {
+                processReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (processWriter != null) {
+            try {
+                processWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (process != null) process.destroy();
     }
 
     private static final class CommandJsonWrapper {

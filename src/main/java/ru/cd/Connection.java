@@ -19,15 +19,28 @@ public class Connection {
         writer = new DataOutputStream(socket.getOutputStream());
     }
 
-    public void writeResult(String result) throws IOException {
-        writer.writeUTF(result);
+    public void writeResult(String result) {
+        try {
+            writer.writeUTF(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void writeBytes(byte[] bytes) throws IOException {
-        writer.write(bytes);
+    public void writeBytes(byte[] bytes) {
+        try {
+            writer.write(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String readCommand() throws IOException {
-        return reader.readUTF();
+    public String readCommand() {
+        try {
+            return reader.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
